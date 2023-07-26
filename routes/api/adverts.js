@@ -16,10 +16,15 @@ router.get('/',async ( req, res, next)=>{
         const skip = req.query.skip;
         const limit =req.query.limit;
 
+        //ordenación
+        const sort = req.query.sort;
+        //selección de campos
+        const fields = req.query.fields
+
         if (filterByName) { filtro.name = filterByName};
         if (filterByPrice) {filtro.precio = filterByPrice}
 
-        const adverts = await Advert.lista( filtro, skip, limit );
+        const adverts = await Advert.lista( filtro, skip, limit, sort, fields );
 
         res.json ({ results: adverts});
 

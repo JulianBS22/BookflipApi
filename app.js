@@ -3,6 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const basicAuth = require('./lib/basicAuthMiddleware');
+const basicAuthMiddleware = require('./lib/basicAuthMiddleware');
 
 require('./lib/conectmongoose');
 
@@ -23,7 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 /**
  * Rutas del Api
  */
-app.use('/api/adverts', require ('./routes/api/adverts'));
+app.use('/api/adverts', basicAuthMiddleware, require ('./routes/api/adverts'));
 
 /**
  * Rutas del Website

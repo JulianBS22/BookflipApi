@@ -14,11 +14,12 @@ const advertSchema = mongoose.Schema({
 
 //colecciones
 
-advertSchema.statics.lista = function(filtro, skip, limit) {
+advertSchema.statics.lista = function(filtro, skip, limit, sort, fields) {
     const query = Adverts.find(filtro);
     query.skip(skip);
     query.limit(limit);
-    
+    query.sort(sort);
+    query.select(fields);
     return query.exec();
 };
 
