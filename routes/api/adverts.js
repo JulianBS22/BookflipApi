@@ -3,9 +3,23 @@ const router = express.Router();
 const Advert = require ('../../models/adverts')
 
 //GET api/adverts
+//devuelve lista de anuncios
 router.get('/',async ( req, res, next)=>{
     try {
-        const adverts = await Advert.find();
+        
+        //filtros
+        const filterByName = req.query.nombre;
+        const filterByPrice = req.query.precio;
+
+        const filtro = {};
+        //paginación
+        const skip = req.query.skip;
+        const limit =req.query.limit;
+
+        if (filterByName) { filtro.name = filterByName};
+        if (filterByPrice) {filtro.precio = filterByPrice}
+
+        const adverts = await Advert.lista( filtro, skip, limit );
 
         res.json ({ results: adverts});
 

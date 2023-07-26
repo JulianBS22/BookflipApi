@@ -10,7 +10,17 @@ const advertSchema = mongoose.Schema({
     contacto: String,
     addId: Number
 
-})
+});
+
+//colecciones
+
+advertSchema.statics.lista = function(filtro, skip, limit) {
+    const query = Adverts.find(filtro);
+    query.skip(skip);
+    query.limit(limit);
+    
+    return query.exec();
+};
 
 //Crear el modelo de los anuncios
 const Adverts = mongoose.model('Adverts', advertSchema);
