@@ -45,6 +45,20 @@ router.put('/:id', async (req, res, next) =>{
 })
 
 
-//PATCH /api/adverts
+//POST /api/adverts   (body)
+//añadir adverts
+router.post ('/', async (req, res, next) =>{
+    try {
+        const advertData = req.body;
 
+        //creamos una instancia de adverts
+        const advert = new Advert(advertData);
+        //la persistimos en la BD
+        const advertSaved = await advert.save();
+        res.json ({ result: advertSaved })
+
+    } catch (error) {
+        next(error)
+    }
+})
 module.exports= router;
