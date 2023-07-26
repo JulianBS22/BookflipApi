@@ -7,5 +7,9 @@
   <body>
     <h1><%= title %></h1>
     <p><%= nombre %> Welcome to <%= title %></p>
+    <h2>Lista de Anuncios</h2>
+    <% adverts.forEach (advert => { %>
+        <p>Anuncio <%= advert.nombre %> Autor <%= advert.autor %> Precio venta <%= advert.precio %>€</p>
+    <% }) %>
   </body>
 </html>

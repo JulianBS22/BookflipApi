@@ -1,11 +1,20 @@
 var express = require('express');
+const Adverts = require('../models/adverts');
 var router = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.locals.nombre = "Julián"
-  
-  res.render('index');
+router.get('/', async function(req, res, next) {
+  try{
+    res.locals.nombre = "Julián"
+    
+    const adverts = await Adverts.find();
+    res.locals.adverts= adverts;
+      
+    res.render('index');
+  } 
+  catch (err) {
+    next (err);
+  }
 });
 
 module.exports = router;

@@ -4,6 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+require('./lib/conectmongoose');
+
 var app = express();
 
 // view engine setup
@@ -18,6 +20,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+/**
+ * Rutas del Api
+ */
+app.use('/api/adverts', require ('./routes/api/adverts'));
+
+/**
+ * Rutas del Website
+ */
+
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
 
@@ -28,12 +39,25 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
+
+  //comprobar si es error de validación
+  if (err.array) {
+    const errorInfo = err.error[0];
+    err.message = `Error en ${errorInfo.location}, parámetro ${errorInfo.param} ${errorInfo.msg}`;
+    err.status = 422;
+  }
+  res.status(err.status || 500);
+  //si lo que ha fallado es una peticion al API, devuelvo el error en json
+  if (req.originalUrl.startsWith('/api/'))
+    res.json({ error:err.message});
+    return;
+
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
+  
   res.render('error');
 });
 
