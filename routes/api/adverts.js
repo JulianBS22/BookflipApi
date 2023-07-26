@@ -14,4 +14,37 @@ router.get('/',async ( req, res, next)=>{
     }
 });
 
+// GET /api/adverts/(_id)
+//Devuelve un adverts buscado por  _id
+router.get('/:id', async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const advert = await Advert.findById(id);
+
+        res.json({ result: advert })
+    } catch (error) {
+        next(error);
+    }
+})
+
+
+//PUT /api/adverts/(id)   (body)
+//actualizar anuncio
+router.put('/:id', async (req, res, next) =>{
+    try {
+        
+        const id = req.params.id
+        const data = req.body;
+        const advertChanged = await Advert.findByIdAndUpdate(id, data, {new:true});
+
+        res.json({ result:advertChanged });
+
+    } catch (error) {
+        next(error);
+    }
+})
+
+
+//PATCH /api/adverts
+
 module.exports= router;
