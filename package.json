@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
+    "cluster": "node ./bin/cluster",
     "dev": "cross-env DEBUG=bookflipapi:* nodemon ./bin/www",
     "initDB": "node ./bin/initDB"
   },

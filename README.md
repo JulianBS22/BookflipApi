@@ -17,3 +17,8 @@ Start in development mode:
 ```sh
 npm run dev
 ```
+Start with cluster mode:
+
+```sh
+npm run cluster
+```
