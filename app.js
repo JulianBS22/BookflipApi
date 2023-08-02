@@ -1,7 +1,8 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
+//var cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 var logger = require('morgan');
 const cors = require('cors');
 require('./lib/conectmongoose');
@@ -9,6 +10,7 @@ const User = require('./models/users.js')
 const bcrypt = require('bcryptjs');
 const { createSecretKey } = require('crypto');
 const bcryptSalt = bcrypt.genSaltSync(10)
+const jwtSecret = '834jnadndKSDNAD9494aamDASD#@#~#'
 
 var app = express();
 
@@ -21,7 +23,7 @@ app.locals.title = "BookflipApi";
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+//app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({
   credentials:true,
@@ -53,6 +55,27 @@ app.post('/register', async (req,res) =>{
   }
   
 });
+
+app.post('/login', async (req, res) => {
+  const {email, password} = req.body
+  const userDoc = await User.findOne({email})
+  if (userDoc) {
+    const passOk = bcrypt.compareSync(password, userDoc.password)
+    if(passOk) {
+      jwt.sign({email:userDoc.email, id:userDoc._id}, jwtSecret, {},(err, token)=>{
+        if (err) throw err;
+        res.cookie('token',token).json('pass ok')
+      })
+      
+    }
+    else {
+      res.status(422).json (' pass failed')
+    }
+  }
+  else {
+    res.json('Not found')
+  }
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
