@@ -1,17 +1,17 @@
 const mongoose = require('mongoose');
-
+const {Schema} = mongoose;
 // Definir el esquema de usuarios
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
   username: { 
     type: String, 
     required: true, 
     unique: true 
 },
-  /*email: { 
+  email: { 
     type: String, 
     required: true, 
     unique: true 
-},*/
+},
   password: { 
     
     type: String, 
@@ -20,8 +20,9 @@ const userSchema = mongoose.Schema({
   
 });
 
+
 // Crear el modelo de usuarios
-const User = mongoose.model('User', userSchema);
+const UserModel = mongoose.model('User', userSchema);
 
 
-module.exports = User;
+module.exports = UserModel;

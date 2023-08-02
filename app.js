@@ -5,6 +5,10 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
 require('./lib/conectmongoose');
+const User = require('./models/users.js')
+const bcrypt = require('bcryptjs');
+const { createSecretKey } = require('crypto');
+const bcryptSalt = bcrypt.genSaltSync(10)
 
 var app = express();
 
@@ -19,6 +23,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors({
+  credentials:true,
+  origin:'http://localhost:3000',
+}));
 
 /**
  * Rutas del Api
@@ -31,6 +39,20 @@ app.use('/api/adverts', require ('./routes/api/adverts'));
 
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
+app.post('/register', async (req,res) =>{
+  const {username,email,password} = req.body;
+  try {
+    const userDoc = await User.create({
+    username,
+    email,
+    password:bcrypt.hashSync(password, bcryptSalt)
+  });
+  res.json(userDoc);
+  } catch (error) {
+    res.status(422).json(error)
+  }
+  
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
