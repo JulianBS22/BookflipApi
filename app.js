@@ -1,7 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-//var cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 var logger = require('morgan');
 const cors = require('cors');
@@ -23,7 +23,7 @@ app.locals.title = "BookflipApi";
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-//app.use(cookieParser());
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({
   credentials:true,
@@ -64,7 +64,7 @@ app.post('/login', async (req, res) => {
     if(passOk) {
       jwt.sign({email:userDoc.email, id:userDoc._id}, jwtSecret, {},(err, token)=>{
         if (err) throw err;
-        res.cookie('token',token).json('pass ok')
+        res.cookie('token',token).json(userDoc)
       })
       
     }
@@ -76,7 +76,10 @@ app.post('/login', async (req, res) => {
     res.json('Not found')
   }
 })
-
+app.get('/profile', (req, res) => {
+  const  {token} = req.cookies;
+  res.json ({token});
+})
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -105,5 +108,6 @@ app.use(function(err, req, res, next) {
   
   res.render('error');
 });
+
 
 module.exports = app;
