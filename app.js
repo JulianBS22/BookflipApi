@@ -78,7 +78,16 @@ app.post('/login', async (req, res) => {
 })
 app.get('/profile', (req, res) => {
   const  {token} = req.cookies;
-  res.json ({token});
+  if (token) {
+    jwt.verify(token, jwtSecret, {}, async (error, userData) =>{
+      if (error) throw error;
+      const {username, email, _id} = await  User.findById(userData.id)
+      res.json({username, email, _id})
+    } )
+  } else {
+    res.json(null);
+  }
+  //res.json ({token});
 })
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -96,7 +105,7 @@ app.use(function(err, req, res, next) {
   }
   res.status(err.status || 500);
   //si lo que ha fallado es una peticion al API, devuelvo el error en json
-  if (req.originalUrl.startsWith('/api/'))
+  if (req.originalUrl.startsWith('/api/')) 
     res.json({ error:err.message});
     return;
 
