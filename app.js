@@ -88,6 +88,9 @@ app.get('/profile', (req, res) => {
     res.json(null);
   }
   //res.json ({token});
+});
+app.post('/logout', (req, res) =>{
+  res.cookie ('token', '').json(true)
 })
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
