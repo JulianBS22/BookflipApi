@@ -11,6 +11,8 @@ const bcrypt = require('bcryptjs');
 const { createSecretKey } = require('crypto');
 const bcryptSalt = bcrypt.genSaltSync(10)
 const jwtSecret = '834jnadndKSDNAD9494aamDASD#@#~#'
+const imageDownloader = require ('image-downloader');
+const { download } = require('express/lib/response');
 
 var app = express();
 
@@ -91,6 +93,16 @@ app.get('/profile', (req, res) => {
 });
 app.post('/logout', (req, res) =>{
   res.cookie ('token', '').json(true)
+})
+
+app.post('/upload-link-photo', async (req,res)=>{
+  const {link} = req.body
+  const newName = Date.now() + '.jpg';
+  await imageDownloader.image({
+    url: link,
+    dest: __dirname+'/uploads' +newName,
+  })
+  res.json(__dirname + '/uploads' + newName);
 })
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
