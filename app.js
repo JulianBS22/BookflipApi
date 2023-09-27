@@ -26,6 +26,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use('/uploads', express.static(__dirname + '/uploads'))
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({
   credentials:true,
@@ -97,12 +98,12 @@ app.post('/logout', (req, res) =>{
 
 app.post('/upload-link-photo', async (req,res)=>{
   const {link} = req.body
-  const newName = Date.now() + '.jpg';
+  const newName = 'photo' + Date.now() + '.jpg';
   await imageDownloader.image({
     url: link,
-    dest: __dirname+'/uploads' +newName,
+    dest: __dirname+'/uploads/' +newName,
   })
-  res.json(__dirname + '/uploads' + newName);
+  res.json(newName);
 })
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
